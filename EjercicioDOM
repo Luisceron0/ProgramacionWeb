@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejercicios de Manipulación del DOM, Eventos y Arrays</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .ejercicio {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+        }
+        h2 {
+            color: #3498db;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 10px;
+        }
+        /* Ejercicio 1: Contador de Caracteres */
+        #contador-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        #comentario {
+            width: 100%;
+            height: 100px;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            resize: vertical;
+        }
+        #contador {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background-color: rgba(255,255,255,0.8);
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.8em;
+            color: #7f8c8d;
+        }
+        /* Ejercicio 2: Galería Interactiva */
+        #galeria {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+        .miniatura {
+            width: 150px;
+            height: 100px;
+            border-radius: 5px;
+            object-fit: cover;
+            cursor: pointer;
+            transition: transform 0.2s;
+            border: 2px solid transparent;
+        }
+        .miniatura:hover {
+            transform: scale(1.05);
+            border-color: #3498db;
+        }
+        #vista-previa {
+            display: flex;
+            margin-top: 20px;
+            align-items: flex-start;
+            display: none;
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        #imagen-grande {
+            width: 300px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-right: 20px;
+        }
+        #descripcion-proyecto {
+            flex: 1;
+        }
+        /* Ejercicio 3: Lista de Tareas */
+        #nueva-tarea {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        #input-tarea {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px 0 0 4px;
+            font-size: 1em;
+        }
+        #btn-agregar {
+            padding: 10px 15px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+        }
+        #btn-agregar:hover {
+            background-color: #2980b9;
+        }
+        #lista-tareas {
+            list-style-type: none;
+            padding: 0;
+        }
+        .tarea {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background-color: #f9f9f9;
+            margin-bottom: 8px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+        .tarea:hover {
+            background-color: #f1f1f1;
+        }
+        .completada {
+            text-decoration: line-through;
+            color: #7f8c8d;
+            background-color: #ecf0f1;
+        }
+        .texto-tarea {
+            flex: 1;
+            margin: 0 15px;
+        }
+        .btn-tarea {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2em;
+            padding: 0 5px;
+        }
+        .btn-completar {
+            color: #2ecc71;
+        }
+        .btn-eliminar {
+            color: #e74c3c;
+        }
+        .asignatura-tag {
+            font-size: 0.8em;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-left: 10px;
+            background-color: #3498db;
+            color: white;
+        }
+        #filtros {
+            display: flex;
+            margin-bottom: 15px;
+            gap: 10px;
+        }
+        .filtro-btn {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 4px;
+            background-color: #ecf0f1;
+            cursor: pointer;
+        }
+        .filtro-btn.active {
+            background-color: #3498db;
+            color: white;
+        }
+        .info-texto {
+            font-size: 0.9em;
+            color: #7f8c8d;
+            font-style: italic;
+            margin-top: 5px;
+        }
+        
+        /* Estilos adicionales para la galería con imágenes reales */
+        .header-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Ejercicios de DOM, Eventos y Arrays en JavaScript</h1>
+    
+    <img src="/api/placeholder/1000/200" alt="Header Image" class="header-img">
+
+    <!-- Ejercicio 1: Contador de Caracteres -->
+    <div class="ejercicio">
+        <h2>Ejercicio 1: Contador de Caracteres para Campo de Comentarios</h2>
+        <p>Escribe un comentario (máximo 200 caracteres):</p>
+        <div id="contador-container">
+            <textarea id="comentario" maxlength="200" placeholder="Escribe tu comentario aquí..."></textarea>
+            <div id="contador">200 caracteres restantes</div>
+        </div>
+        <p class="info-texto">El contador se actualiza mientras escribes usando el evento 'input'.</p>
+    </div>
+
+    <!-- Ejercicio 2: Galería Interactiva -->
+    <div class="ejercicio">
+        <h2>Ejercicio 2: Galería Interactiva de Proyectos</h2>
+        <p>Pasa el cursor sobre las miniaturas para ver más detalles (eventos mouseover/mouseout):</p>
+        <div id="galeria">
+            <!-- Las miniaturas se generarán dinámicamente -->
+        </div>
+        <div id="vista-previa">
+            <img id="imagen-grande" src="" alt="Vista previa">
+            <div id="descripcion-proyecto">
+                <h3 id="titulo-proyecto"></h3>
+                <p id="texto-descripcion"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ejercicio 3: Lista de Tareas -->
+    <div class="ejercicio">
+        <h2>Ejercicio 3: Lista de Tareas de Asignaturas</h2>
+        <div id="nueva-tarea">
+            <input type="text" id="input-tarea" placeholder="Agregar nueva tarea de asignatura...">
+            <button id="btn-agregar">Agregar</button>
+        </div>
+        <p class="info-texto">Presiona Enter para agregar una tarea o haz clic en el botón.</p>
+        
+        <div id="filtros">
+            <button class="filtro-btn active" data-filtro="todas">Todas</button>
+            <button class="filtro-btn" data-filtro="pendientes">Pendientes</button>
+            <button class="filtro-btn" data-filtro="completadas">Completadas</button>
+        </div>
+        
+        <ul id="lista-tareas">
+            <!-- Las tareas se agregarán aquí dinámicamente -->
+        </ul>
+    </div>
+
+    <script>
+        // Ejercicio 1: Contador de Caracteres
+        const comentarioTextarea = document.getElementById('comentario');
+        const contadorElemento = document.getElementById('contador');
+        const maxCaracteres = 200;
+
+        // Función para actualizar el contador
+        function actualizarContador() {
+            const caracteresUsados = comentarioTextarea.value.length;
+            const caracteresRestantes = maxCaracteres - caracteresUsados;
+            contadorElemento.textContent = `${caracteresRestantes} caracteres restantes`;
+            
+            // Cambiar color cuando quedan pocos caracteres
+            if (caracteresRestantes < 20) {
+                contadorElemento.style.color = '#e74c3c';
+            } else {
+                contadorElemento.style.color = '#7f8c8d';
+            }
+        }
+
+        // Evento input para detectar cambios en tiempo real
+        comentarioTextarea.addEventListener('input', actualizarContador);
+
+        // Inicializar contador
+        actualizarContador();
+
+        // Ejercicio 2: Galería Interactiva
+        const galeriaContenedor = document.getElementById('galeria');
+        const vistaPrevia = document.getElementById('vista-previa');
+        const imagenGrande = document.getElementById('imagen-grande');
+        const tituloProyecto = document.getElementById('titulo-proyecto');
+        const textoDescripcion = document.getElementById('texto-descripcion');
+
+        // Datos de los proyectos con lorem ipsum y las imágenes proporcionadas
+        const proyectos = [
+            {
+                id: 1,
+                titulo: "Lorem Ipsum Dolor Sit Amet",
+                descripcion: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam varius felis nec odio rhoncus, eu tempor purus vestibulum. Mauris non justo quis nunc aliquam feugiat.",
+                imagen: "/api/placeholder/300/200?text=Tecnologia",
+                miniatura: "/api/placeholder/150/100?text=Tech"
+            },
+            {
+                id: 2,
+                titulo: "Consectetur Adipiscing Elit",
+                descripcion: "Praesent in libero vel turpis pellentesque egestas sit amet vel nunc. Nunc lobortis lectus ac semper commodo. Vivamus consequat sapien ut nulla varius, quis pharetra libero sollicitudin.",
+                imagen: "/api/placeholder/300/200?text=Programacion",
+                miniatura: "/api/placeholder/150/100?text=Code"
+            },
+            {
+                id: 3,
+                titulo: "Nullam Varius Felis Nec",
+                descripcion: "Donec auctor, nisl eget ultricies ultrices, nunc nisl aliquam nisl, eget aliquam nisl nisl eget nisl. Donec auctor, nisl eget ultricies ultrices, nunc nisl aliquam nisl.",
+                imagen: "/api/placeholder/300/200?text=Diseno",
+                miniatura: "/api/placeholder/150/100?text=Design"
+            },
+            {
+                id: 4,
+                titulo: "Praesent In Libero Vel",
+                descripcion: "Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Donec pharetra, magna vestibulum aliquet ultricies, erat tellus feugiat tellus.",
+                imagen: "/api/placeholder/300/200?text=Analisis",
+                miniatura: "/api/placeholder/150/100?text=Analytics"
+            }
+        ];
+
+        // Generar miniaturas dinámicamente
+        proyectos.forEach(proyecto => {
+            const miniatura = document.createElement('img');
+            miniatura.src = proyecto.miniatura;
+            miniatura.alt = proyecto.titulo;
+            miniatura.className = 'miniatura';
+            miniatura.setAttribute('data-id', proyecto.id);
+            galeriaContenedor.appendChild(miniatura);
+            
+            // Eventos para las miniaturas
+            miniatura.addEventListener('mouseover', function() {
+                mostrarProyecto(proyecto.id);
+            });
+            
+            miniatura.addEventListener('mouseout', function() {
+                // Si quisiéramos ocultar la vista previa al quitar el cursor
+                // vistaPrevia.style.display = 'none';
+            });
+        });
+        
+        // Función para mostrar proyecto
+        function mostrarProyecto(id) {
+            const proyecto = proyectos.find(p => p.id === id);
+            
+            if (proyecto) {
+                imagenGrande.src = proyecto.imagen;
+                imagenGrande.alt = proyecto.titulo;
+                tituloProyecto.textContent = proyecto.titulo;
+                textoDescripcion.textContent = proyecto.descripcion;
+                vistaPrevia.style.display = 'flex';
+            }
+        }
+
+        // Ejercicio 3: Lista de Tareas
+        const inputTarea = document.getElementById('input-tarea');
+        const btnAgregar = document.getElementById('btn-agregar');
+        const listaTareas = document.getElementById('lista-tareas');
+        const botonesFiltro = document.querySelectorAll('.filtro-btn');
+        
+        // Array para almacenar las tareas
+        let tareas = [];
+        
+        // Filtro actual
+        let filtroActual = 'todas';
+        
+        // Asignaturas disponibles (para asignar aleatoriamente)
+        const asignaturas = ['Matemáticas', 'Programación', 'Física', 'Química', 'Historia', 'Inglés'];
+
+        // Función para agregar una nueva tarea
+        function agregarTarea() {
+            const textoTarea = inputTarea.value.trim();
+            
+            if (textoTarea) {
+                // Asignar una asignatura aleatoria
+                const asignaturaAleatoria = asignaturas[Math.floor(Math.random() * asignaturas.length)];
+                
+                // Crear objeto de tarea
+                const nuevaTarea = {
+                    id: Date.now(),
+                    texto: textoTarea,
+                    completada: false,
+                    asignatura: asignaturaAleatoria
+                };
+                
+                // Agregar al array de tareas
+                tareas.push(nuevaTarea);
+                
+                // Actualizar la interfaz
+                actualizarListaTareas();
+                
+                // Limpiar el input
+                inputTarea.value = '';
+                
+                // Enfocar nuevamente el input para facilitar la entrada de más tareas
+                inputTarea.focus();
+            }
+        }
+
+        // Función para completar una tarea
+        function completarTarea(id) {
+            // Encontrar la tarea y cambiar su estado usando método map
+            tareas = tareas.map(tarea => {
+                if (tarea.id === id) {
+                    return { ...tarea, completada: !tarea.completada };
+                }
+                return tarea;
+            });
+            
+            // Actualizar la interfaz
+            actualizarListaTareas();
+        }
+
+        // Función para eliminar una tarea
+        function eliminarTarea(id) {
+            // Filtrar la tarea del array usando método filter
+            tareas = tareas.filter(tarea => tarea.id !== id);
+            
+            // Actualizar la interfaz
+            actualizarListaTareas();
+        }
+
+        // Función para actualizar la interfaz de la lista de tareas
+        function actualizarListaTareas() {
+            // Limpiar la lista actual
+            listaTareas.innerHTML = '';
+            
+            // Filtrar las tareas según el filtro activo
+            let tareasFiltradas = tareas;
+            
+            if (filtroActual === 'pendientes') {
+                tareasFiltradas = tareas.filter(tarea => !tarea.completada);
+            } else if (filtroActual === 'completadas') {
+                tareasFiltradas = tareas.filter(tarea => tarea.completada);
+            }
+            
+            // Si no hay tareas después del filtro, mostrar mensaje
+            if (tareasFiltradas.length === 0) {
+                const mensaje = document.createElement('li');
+                mensaje.textContent = filtroActual === 'todas' ? 
+                    'No hay tareas pendientes. ¡Añade alguna!' : 
+                    `No hay tareas ${filtroActual}.`;
+                mensaje.style.textAlign = 'center';
+                mensaje.style.padding = '20px';
+                mensaje.style.color = '#7f8c8d';
+                listaTareas.appendChild(mensaje);
+                return;
+            }
+            
+            // Crear elementos para cada tarea
+            tareasFiltradas.forEach(tarea => {
+                const elementoTarea = document.createElement('li');
+                elementoTarea.className = `tarea ${tarea.completada ? 'completada' : ''}`;
+                
+                // Botón de completar
+                const btnCompletar = document.createElement('button');
+                btnCompletar.className = 'btn-tarea btn-completar';
+                btnCompletar.innerHTML = tarea.completada ? '&#10004;' : '&#9634;'; // Checkbox vacío o completo
+                btnCompletar.addEventListener('click', () => completarTarea(tarea.id));
+                
+                // Texto de la tarea
+                const textoTarea = document.createElement('span');
+                textoTarea.className = 'texto-tarea';
+                textoTarea.textContent = tarea.texto;
+                
+                // Etiqueta de asignatura
+                const asignaturaTag = document.createElement('span');
+                asignaturaTag.className = 'asignatura-tag';
+                asignaturaTag.textContent = tarea.asignatura;
+                textoTarea.appendChild(asignaturaTag);
+                
+                // Botón de eliminar
+                const btnEliminar = document.createElement('button');
+                btnEliminar.className = 'btn-tarea btn-eliminar';
+                btnEliminar.innerHTML = '&times;'; // Símbolo X
+                btnEliminar.addEventListener('click', () => eliminarTarea(tarea.id));
+                
+                // Añadir todos los elementos a la tarea
+                elementoTarea.appendChild(btnCompletar);
+                elementoTarea.appendChild(textoTarea);
+                elementoTarea.appendChild(btnEliminar);
+                
+                // Añadir la tarea a la lista
+                listaTareas.appendChild(elementoTarea);
+            });
+        }
+
+        // Eventos para el filtro
+        botonesFiltro.forEach(boton => {
+            boton.addEventListener('click', function() {
+                // Cambiar clase activa
+                botonesFiltro.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Actualizar filtro
+                filtroActual = this.getAttribute('data-filtro');
+                
+                // Actualizar lista
+                actualizarListaTareas();
+            });
+        });
+
+        // Eventos para agregar tareas
+        btnAgregar.addEventListener('click', agregarTarea);
+        
+        // Evento para tecla Enter
+        inputTarea.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                agregarTarea();
+            }
+        });
+
+        // Inicializar con algunas tareas de ejemplo
+        const tareasIniciales = [
+            { id: 1, texto: "Lorem ipsum dolor sit amet, consectetur adipiscing elit", completada: false, asignatura: "Programación" },
+            { id: 2, texto: "Praesent in libero vel turpis pellentesque egestas", completada: false, asignatura: "Matemáticas" },
+            { id: 3, texto: "Donec auctor, nisl eget ultricies ultrices", completada: true, asignatura: "Física" }
+        ];
+        
+        tareas = tareasIniciales;
+        
+        // Inicializar la interfaz de tareas
+        actualizarListaTareas();
+    </script>
+</body>
+</html>
